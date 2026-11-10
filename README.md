@@ -4,7 +4,7 @@
 
 Local presence tracking for ZTE MC888A Ultra routers using their HTTPS **Goform** API. Initially developed and tested against firmware `BD_ATMC888AULTRAV1.0.0B20` using the router's password-only `LOGIN` endpoint.
 
-> **Status: v0.1.1 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
+> **Status: v0.1.2 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
 
 ## Features
 
@@ -40,6 +40,21 @@ For manual installation, copy `custom_components/zte_mc888a_presence` to Home As
 ### First installation
 
 The initial v0.1.1 build is experimental. Before using the trackers to control heating, check the router login, sensor counts, and delayed presence states in Home Assistant.
+
+## Router session expiry and zero-client safeguards
+
+Starting in **0.1.2**, a zero/blank Wi-Fi list is **never accepted as a valid
+absence scan**. This fixes a case where the MC888A Ultra temporarily returned
+`station_list: []` or `station_list: ""` and `wifi_access_sta_num: 0`
+after a session expired, falsely reporting all household devices as away.
+The integration attempts one fresh login with a new cookie jar, limiting
+retries to once every five minutes. If the list is still empty, the
+coordinator becomes unavailable; presence automations must not treat
+`unavailable` as `not_home`.
+
+**Limitation:** This safeguard deliberately assumes at least one WLAN client is
+normally connected. Networks that legitimately reach zero Wi-Fi clients are
+not currently supported without changing this behavior.
 
 ## Reliable presence
 
