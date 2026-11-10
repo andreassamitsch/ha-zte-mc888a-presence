@@ -1,7 +1,7 @@
 {
   "domain": "zte_mc888a_presence",
   "name": "ZTE MC888A Presence",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "config_flow": true,
   "documentation": "https://github.com/andreassamitsch/ha-zte-mc888a-presence",
   "issue_tracker": "https://github.com/andreassamitsch/ha-zte-mc888a-presence/issues",
