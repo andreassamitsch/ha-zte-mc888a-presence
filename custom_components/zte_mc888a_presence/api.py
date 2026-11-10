@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 import logging
+from time import monotonic
 from typing import Any
 
 import aiohttp
@@ -51,8 +52,12 @@ def _sha256(value: str) -> str:
 
 def _decode_list(value: Any) -> list[dict[str, Any]]:
     """ZTE firmware returns either JSON arrays or JSON-encoded strings."""
-    if value == "" or value is None:
-        return []
+    if value is None:
+        raise ZTEProtocolError("Missing device-list response")
+    if value == "":
+        # An expired login often returns an empty string instead of an array.
+        # A real zero-client response must be represented by [].
+        raise ZTEProtocolError("Router returned an empty device-list field")
     if isinstance(value, str):
         try:
             value = json.loads(value)
@@ -72,6 +77,8 @@ class ZTERouterClient:
         self._session: aiohttp.ClientSession | None = None
         self._authenticated = False
         self._lock = asyncio.Lock()
+        self._last_reauth_attempt: float | None = None
+        self._reauth_cooldown_seconds = 300
 
     async def async_close(self) -> None:
         """Close the private router session and discard its cookies."""
@@ -170,35 +177,56 @@ class ZTERouterClient:
             )
         return clients
 
-    async def async_get_clients(self) -> dict[str, ZTEClientDevice]:
-        """Get all currently connected clients; reuse the login session.
+    async def _get_verified_clients(self) -> dict[str, ZTEClientDevice]:
+        """Read both lists, rejecting invalid or implausible Wi-Fi responses.
 
-        A zero-length station list despite a nonzero Wi-Fi count suggests
-        a lost login session. Attempt one reauthentication, then fail closed
-        rather than marking everybody away.
+        On the supported MC888A home network, Wi-Fi is never genuinely empty.
+        A blank or empty station_list is therefore not evidence of absence.
+        Never trust wifi_access_sta_num == 0 as confirmation: it can also
+        return zero when the router session has silently expired.
+        """
+        wifi = await self._read_device_list("station_list", "wifi")
+        if not wifi:
+            raise ZTEProtocolError(
+                "Router returned 0 Wi-Fi clients; treating scan as invalid"
+            )
+
+        lan = await self._read_device_list("lan_station_list", "ethernet")
+        # A missing LAN device is legitimate; zero Wi-Fi clients is not.
+        return {client.mac: client for client in [*lan, *wifi]}
+
+    async def async_get_clients(self) -> dict[str, ZTEClientDevice]:
+        """Read clients; renew an invalid session once with a cooldown.
+
+        False absence is more dangerous than an unavailable tracker for
+        heating/presence automations. A failed scan must never become {}.
         """
         async with self._lock:
             if not self._authenticated:
                 await self._login()
+            try:
+                return await self._get_verified_clients()
+            except ZTEProtocolError as exc:
+                now = monotonic()
+                if (
+                    self._last_reauth_attempt is not None
+                    and now - self._last_reauth_attempt < self._reauth_cooldown_seconds
+                ):
+                    # Avoid repeated admin logins every minute if the router
+                    # remains unresponsive or stops returning its client list.
+                    raise ZTEProtocolError(
+                        "Invalid router client list; re-login on cooldown"
+                    ) from exc
 
-            wifi = await self._read_device_list("station_list", "wifi")
-            lan = await self._read_device_list("lan_station_list", "ethernet")
+                self._last_reauth_attempt = now
+                _LOGGER.warning(
+                    "ZTE device list invalid or empty; renewing HTTPS session once"
+                )
+                # A fresh cookie jar is essential. Merely issuing LOGIN on an
+                # expired HTTP session may silently return blank lists again.
+                await self.async_close()
+                await self._login()
 
-            if not wifi:
-                count_payload = await self._request(command="wifi_access_sta_num")
-                try:
-                    wifi_count = int(count_payload.get("wifi_access_sta_num", 0))
-                except (ValueError, TypeError):
-                    wifi_count = 0
-                if wifi_count > 0:
-                    self._authenticated = False
-                    await self._login()
-                    wifi = await self._read_device_list("station_list", "wifi")
-                    lan = await self._read_device_list("lan_station_list", "ethernet")
-                    if not wifi:
-                        raise ZTEProtocolError(
-                            "Wi-Fi clients are present but station_list is empty"
-                        )
-
-            # One router-wide request per platform, not per tracked device.
-            return {client.mac: client for client in [*lan, *wifi]}
+                # If the new authenticated session still reports zero clients,
+                # propagate an error to Home Assistant's coordinator.
+                return await self._get_verified_clients()
