@@ -1,8 +1,10 @@
 # ZTE MC888A Presence for Home Assistant
 
+![ZTE MC888A Presence icon](custom_components/zte_mc888a_presence/brand/icon.png)
+
 Local presence tracking for ZTE MC888A Ultra routers using their HTTPS **Goform** API. Initially developed and tested against firmware `BD_ATMC888AULTRAV1.0.0B20` using the router's password-only `LOGIN` endpoint.
 
-> **Status: v0.1.0 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
+> **Status: v0.1.1 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
 
 ## Features
 
@@ -15,6 +17,10 @@ Local presence tracking for ZTE MC888A Ultra routers using their HTTPS **Goform*
 - On router communication errors, entities become unavailable instead of marking everyone away
 - Diagnostic Wi-Fi, LAN and total client counts, and last successful poll time
 - English/German UI; local credentials stored in HA config entries, never committed to source
+
+## Integration icon
+
+The custom logo is bundled as `custom_components/zte_mc888a_presence/brand/icon.png` (transparent 256×256 PNG). Home Assistant 2026.3+ displays it automatically on the integration page. After updating, restart Home Assistant and refresh its frontend. The HACS repository listing may still display **icon not available** due to a separate HACS frontend issue; the Home Assistant integration page should use the bundled icon.
 
 ## Installation
 
@@ -33,7 +39,7 @@ For manual installation, copy `custom_components/zte_mc888a_presence` to Home As
 
 ### First installation
 
-The initial v0.1.0 build is experimental. Before using the trackers to control heating, check the router login, sensor counts, and delayed presence states in Home Assistant.
+The initial v0.1.1 build is experimental. Before using the trackers to control heating, check the router login, sensor counts, and delayed presence states in Home Assistant.
 
 ## Reliable presence
 
