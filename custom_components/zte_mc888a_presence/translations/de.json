@@ -1,0 +1,55 @@
+{
+  "title": "ZTE MC888A Anwesenheit",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verbindung zum ZTE-Router",
+        "description": "Gib das Kennwort der lokalen Router-Weboberfläche ein. HTTPS wird verwendet; das selbstsignierte Routerzertifikat wird akzeptiert.",
+        "data": {
+          "host": "Router-IP oder Hostname",
+          "password": "Routerpasswort"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Bitte eine gültige Routeradresse eingeben.",
+      "invalid_auth": "Der Router hat das Passwort abgelehnt.",
+      "cannot_connect": "Router nicht erreichbar oder Geräteliste konnte nicht gelesen werden."
+    },
+    "abort": {
+      "already_configured": "Dieser Router ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anwesenheitserkennung",
+        "description": "Erkannte Geräte aus dem letzten Scan (MAC | IP | Hostname):\\n{detected_clients}\\n\\nMAC-Adressen durch Komma oder Zeilenumbruch trennen. Für Namen: AA:BB:CC:DD:EE:FF=Andi S23. Nur eingetragene Geräte erhalten Tracker. Falls ein Smartphone gerade abwesend ist, nach der WLAN-Verbindung diesen Dialog erneut öffnen.",
+        "data": {
+          "tracked_devices": "Überwachte Geräte (MAC=Name, durch Komma getrennt)",
+          "away_seconds": "Nach WLAN-Trennung noch anwesend (Sekunden)"
+        }
+      }
+    },
+    "error": {
+      "invalid_macs": "MAC-Format überprüfen (AA:BB:CC:DD:EE:FF).",
+      "no_devices": "Bitte mindestens eine Geräte-MAC-Adresse eingeben."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "wifi": {
+        "name": "WLAN-Geräte"
+      },
+      "ethernet": {
+        "name": "LAN-Geräte"
+      },
+      "total": {
+        "name": "Verbundene Geräte"
+      },
+      "last_success": {
+        "name": "Letzter erfolgreicher Scan"
+      }
+    }
+  }
+}

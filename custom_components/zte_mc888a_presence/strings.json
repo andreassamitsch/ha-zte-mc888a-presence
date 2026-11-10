@@ -1,0 +1,55 @@
+{
+  "title": "ZTE MC888A Presence",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to ZTE router",
+        "description": "Use the password for the local router web interface. HTTPS is required; the router's self-signed certificate is accepted.",
+        "data": {
+          "host": "Router IP address or hostname",
+          "password": "Router password"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Enter a valid router address.",
+      "invalid_auth": "Router rejected the password.",
+      "cannot_connect": "Cannot connect or read clients from this router."
+    },
+    "abort": {
+      "already_configured": "This router is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Presence tracking",
+        "description": "Connected devices from the latest scan (MAC | IP | hostname):\\n{detected_clients}\\n\\nEnter MAC addresses separated by commas or new lines. To name a device use AA:BB:CC:DD:EE:FF=Andi S23. Only entered devices will get trackers. If a phone is away, reconnect it to Wi-Fi and reopen this screen to get its MAC address.",
+        "data": {
+          "tracked_devices": "Tracked devices (MAC=Name, comma separated)",
+          "away_seconds": "Keep home after disconnection (seconds)"
+        }
+      }
+    },
+    "error": {
+      "invalid_macs": "Check the MAC address format (AA:BB:CC:DD:EE:FF).",
+      "no_devices": "Enter at least one device MAC address."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "wifi": {
+        "name": "Wi-Fi clients"
+      },
+      "ethernet": {
+        "name": "LAN clients"
+      },
+      "total": {
+        "name": "Connected clients"
+      },
+      "last_success": {
+        "name": "Last successful scan"
+      }
+    }
+  }
+}
