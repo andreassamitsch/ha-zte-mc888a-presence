@@ -31,9 +31,9 @@ This repo is public so Home Assistant **Marketplace** (Home Assistant 2026.11+) 
 
 For manual installation, copy `custom_components/zte_mc888a_presence` to Home Assistant's `config/custom_components/` folder and restart Home Assistant.
 
-### Important: this repository currently has a development branch
+### First installation
 
-The code will be reviewed through a pull request before appearing on `main`. Do not install from `main` until that pull request has been merged.
+The initial v0.1.0 build is experimental. Before using the trackers to control heating, check the router login, sensor counts, and delayed presence states in Home Assistant.
 
 ## Reliable presence
 
