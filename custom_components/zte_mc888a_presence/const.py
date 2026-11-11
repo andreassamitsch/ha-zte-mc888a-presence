@@ -47,3 +47,26 @@ def safe_host(host: str) -> str:
     if ".." in host or host.endswith("."):
         raise ValueError("Invalid router host")
     return host
+
+
+def is_retired_mac_device(
+    connections: set[tuple[str, str]] | frozenset[tuple[str, str]],
+    tracked_macs: set[str],
+    mac_connection_type: str,
+) -> bool:
+    """Identify an unconfigured device by its MAC connections.
+
+    A router hub without a MAC connection is never considered retired.
+    If a device has any still-configured MAC, preserve it. This helper
+    deliberately does not depend on Home Assistant so it can be tested.
+    """
+    macs = set()
+    for connection_type, address in connections:
+        if connection_type != mac_connection_type:
+            continue
+        try:
+            macs.add(normalize_mac(address))
+        except ValueError:
+            continue
+
+    return bool(macs) and macs.isdisjoint(tracked_macs)

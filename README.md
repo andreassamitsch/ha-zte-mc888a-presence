@@ -4,7 +4,7 @@
 
 Local presence tracking for ZTE MC888A Ultra routers using their HTTPS **Goform** API. Initially developed and tested against firmware `BD_ATMC888AULTRAV1.0.0B20` using the router's password-only `LOGIN` endpoint.
 
-> **Status: v0.1.2 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
+> **Status: v0.1.3 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
 
 ## Features
 
@@ -55,6 +55,15 @@ coordinator becomes unavailable; presence automations must not treat
 **Limitation:** This safeguard deliberately assumes at least one WLAN client is
 normally connected. Networks that legitimately reach zero Wi-Fi clients are
 not currently supported without changing this behavior.
+
+## Removing old phones and device trackers
+
+1. Open **Settings → Devices & services → ZTE MC888A Presence → Configure**.
+2. Under **Tracked devices**, remove the obsolete MAC address or device entry (not just the display name). Leave the MACs for devices you still want to track.
+3. Save. The integration reloads and (from **v0.1.3**) removes the retired device and its entity-registry entry automatically. The router and active phone trackers are never removed.
+4. A **Delete** action is also supported in Home Assistant for a device that has already been removed from the configuration. Active configured devices cannot be deleted until their MAC is removed from the options.
+
+If several device entries share a friendly name (for example, "Andi S23"), use each device's MAC address to determine which one to keep. Deleting a device removes its Home Assistant entity registration and may break person associations, dashboard cards, and automations referencing it.
 
 ## Reliable presence
 
