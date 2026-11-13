@@ -1,10 +1,10 @@
-# ZTE MC888A Presence for Home Assistant
+# ZTE MC888A Ultra Presence for Home Assistant
 
-![ZTE MC888A Presence icon](custom_components/zte_mc888a_presence/brand/icon.png)
+![ZTE MC888A Ultra Presence icon](custom_components/zte_mc888a_presence/brand/icon.png)
 
 Local presence tracking for ZTE MC888A Ultra routers using their HTTPS **Goform** API. Initially developed and tested against firmware `BD_ATMC888AULTRAV1.0.0B20` using the router's password-only `LOGIN` endpoint.
 
-> **Status: v0.1.3 / early test build.** The CLI login and JSON device lists were confirmed on this firmware. The new Home Assistant integration code **has not yet been tested against the router in Home Assistant**.
+> **Status: v0.1.4 / active testing.** The integration has been confirmed to work in Home Assistant with the ZTE MC888A Ultra on the stated firmware.
 
 ## Features
 
@@ -28,8 +28,8 @@ This repo is public so Home Assistant **Marketplace** (Home Assistant 2026.11+) 
 
 1. In **Settings → Marketplace**, add the repository URL as a custom integration repository:
    `https://github.com/andreassamitsch/ha-zte-mc888a-presence`
-2. Install **ZTE MC888A Presence**, then restart Home Assistant.
-3. In **Settings → Devices & services → Add integration**, select **ZTE MC888A Presence**.
+2. Install **ZTE MC888A Ultra Presence**, then restart Home Assistant.
+3. In **Settings → Devices & services → Add integration**, select **ZTE MC888A Ultra Presence**.
 4. Enter the router IP (normally `192.168.1.1`) and the local **router web password**. This firmware needs **no username**.
 5. Open the integration's **Configure** dialog and enter tracked clients:
    `AA:BB:CC:DD:EE:FF=Andi S23, 11:22:33:44:55:66=Iris iPhone`
@@ -39,7 +39,7 @@ For manual installation, copy `custom_components/zte_mc888a_presence` to Home As
 
 ### First installation
 
-The initial v0.1.1 build is experimental. Before using the trackers to control heating, check the router login, sensor counts, and delayed presence states in Home Assistant.
+This integration is still under active development. Before using the trackers to control heating, check the router login, sensor counts, and delayed presence states in Home Assistant.
 
 ## Router session expiry and zero-client safeguards
 
@@ -58,7 +58,7 @@ not currently supported without changing this behavior.
 
 ## Removing old phones and device trackers
 
-1. Open **Settings → Devices & services → ZTE MC888A Presence → Configure**.
+1. Open **Settings → Devices & services → ZTE MC888A Ultra Presence → Configure**.
 2. Under **Tracked devices**, remove the obsolete MAC address or device entry (not just the display name). Leave the MACs for devices you still want to track.
 3. Save. The integration reloads and (from **v0.1.3**) removes the retired device and its entity-registry entry automatically. The router and active phone trackers are never removed.
 4. A **Delete** action is also supported in Home Assistant for a device that has already been removed from the configuration. Active configured devices cannot be deleted until their MAC is removed from the options.
