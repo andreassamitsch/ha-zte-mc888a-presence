@@ -53,7 +53,7 @@ class ZTEPresenceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(f"zte_mc888a_{host}")
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
-                    title=f"ZTE MC888A ({host})",
+                    title=f"ZTE MC888A Ultra ({host})",
                     data={CONF_HOST: host, CONF_PASSWORD: user_input[CONF_PASSWORD]},
                 )
 
