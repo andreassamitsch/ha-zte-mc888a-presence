@@ -1,9 +1,9 @@
 {
-  "title": "ZTE MC888A Anwesenheit",
+  "title": "ZTE MC888A Ultra – Anwesenheit",
   "config": {
     "step": {
       "user": {
-        "title": "Verbindung zum ZTE-Router",
+        "title": "Verbindung zum ZTE MC888A Ultra",
         "description": "Gib das Kennwort der lokalen Router-Weboberfläche ein. HTTPS wird verwendet; das selbstsignierte Routerzertifikat wird akzeptiert.",
         "data": {
           "host": "Router-IP oder Hostname",
