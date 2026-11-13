@@ -1,9 +1,9 @@
 {
-  "title": "ZTE MC888A Presence",
+  "title": "ZTE MC888A Ultra Presence",
   "config": {
     "step": {
       "user": {
-        "title": "Connect to ZTE router",
+        "title": "Connect to ZTE MC888A Ultra",
         "description": "Use the password for the local router web interface. HTTPS is required; the router's self-signed certificate is accepted.",
         "data": {
           "host": "Router IP address or hostname",
